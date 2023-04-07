@@ -1,5 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
 
 import { MyText } from '../utils/utils';
 
@@ -7,21 +6,26 @@ import PollForm from './pollForm';
 
 export default function CreatePoll() {
     return (
-        <View style={styles.page}>
-            <MyText content={'Create New Poll:'} classNames={[styles.pageHeader]} />
-            <PollForm />
-        </View>
+        <SafeAreaView style={styles.page}>
+            <View style={styles.content}> 
+                <MyText content={'Create New Poll:'} classNames={[styles.pageHeader]} />
+                <PollForm />
+            </View>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     page: {
-        padding: '10px',
-        backgroundColor: 'white',
         height: '100%'
     },
+    content: {
+        padding: 20
+    },
     pageHeader: {
-        fontSize: '16pt',
+        fontSize: 24,
+        backgroundColor: 'blue',
+        color: 'white',
         textAlign: 'center',
         textAlignVertical: 'center',
     }

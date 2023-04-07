@@ -1,25 +1,39 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import { MyText } from './utils/utils';
+import { StyleSheet, Text, SafeAreaView, ActivityIndicator } from 'react-native';
+import { MyButton, MyText } from './utils/utils';
+import axios from 'axios';
+
+import { useQuery } from 'react-query';
+
+const getPolls = async () => {
+    const { data } = await axios.get('https://642fbe66c26d69edc882766d.mockapi.io/api/youPoll/polls');
+    return data
+}
 
 export default function Feed({ navigation }) {
+    const { isLoading, error, data } = useQuery('pollData', getPolls);
+    if (isLoading) console.log('loading')
+    else if (error) console.log('error')
+    else console.log('success or whatever')
+
+    console.log(data)
+
     return (
-        <View styles={styles.container}>        
+        <SafeAreaView style={styles.container}>
             <MyText content={'Home'} classNames={[]} />
-            <Button 
-                title="Create New Poll"
-                onPress={() => navigation.navigate('Create')}
+            <MyButton 
+                content={"Create New Poll"}
+                callback={() => navigation.navigate('Create')}
             />
-        </View>
+            <ActivityIndicator size = 'large'/>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         fontFamily: 'Avenir',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '5px'
+        padding: 20
     }
 });

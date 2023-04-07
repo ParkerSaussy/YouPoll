@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     logo: {
         color: 'white',
         fontFamily: 'Avenir',
-        fontSize: '24pt',
+        fontSize: 24,
         fontWeight: '600',
         margin: '20px'
     }

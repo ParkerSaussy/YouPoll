@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, TextInput } from 'react-native';
 
-import { MyButton, MyText } from '../utils/utils';
+import { MyButton } from '../utils/utils';
 
 export default function PollOptions({ register, unregister }) {
     const [options, setOptions] = useState([]);
@@ -35,18 +35,18 @@ export default function PollOptions({ register, unregister }) {
     return (
         <View style={styles.pollOptions}>
             <View style={styles.optionRow}>
-                <input id={`pollOption.0`} placeholder='Enter Option...' style={styles.pollTextInput} {...register(`pollOption.0`)}  />
+                <input id={'pollOption.0'} placeholder={'Enter Option...'} style={styles.pollTextInput} {...register('pollOption.0')}  />
             </View>
-            {options.length > 0 && (
+            {options.length > 0 ? (
                 <View>
                     {options.map((optionKey, i) => 
                         <View key={i} style={[styles.optionRow, styles.renderedRow]}>
-                            <input id={optionKey} placeholder='Enter Option...' style={styles.pollTextInput} {...register(optionKey)}  />
+                            <input id={optionKey} placeholder={'Enter Option...'} style={styles.pollTextInput} {...register(optionKey)} />
                             <MyButton content={'X'} classNames={[styles.deleteText]} callback={() => removeOption(i, optionKey)} />
                         </View>
                     )}
                 </View>
-            )}
+            ):null}
             <MyButton 
                 content={'+ Add Poll Option'} 
                 callback={addOption} 
@@ -71,11 +71,12 @@ const styles = StyleSheet.create({
     },
     optionRow: {
         flex: 1,
-        display: 'flex',
-        flexDirection: 'row',
         padding: '5px',
+        marginTop: '5px',
     },
     renderedRow: {
+        display: 'flex',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         borderTopColor: '#ededed',
         borderTopWidth: '1px',
@@ -85,7 +86,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#3424FE',
         borderRadius: '8px',
         justifyContent: 'center',
-        textAlign:'center',
         marginTop: '10px',
     },
     addOptionButtonText: {
@@ -98,12 +98,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         height: '5px',
         margin: '5px',
-    },
-    deleteButton: {
-        backgroundColor: '#ededed',
-        padding: '2px',
-        paddingLeft: '15px',
-        paddingRight: '15px',
-        borderRadius: '5px',
     },
 })

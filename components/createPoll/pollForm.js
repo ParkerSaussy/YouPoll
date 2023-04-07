@@ -1,76 +1,129 @@
-import { useForm } from "react-hook-form";
-import { StyleSheet, Text, View } from 'react-native';
+import { useForm, useFormContext, useController, FormProvider } from "react-hook-form";
+import { StyleSheet, View, SafeAreaView, TextInput, Text, Alert } from 'react-native';
+import { MyButton } from "../utils/utils";
+import axios from "axios";
+import {
+    useQuery,
+    useMutation,
+    useQueryClient,
+    QueryClient,
+    QueryClientProvider,
+  } from 'react-query';
 
-import { MyText } from "../utils/utils";
-
-import PollOptions from "./pollOptions";
-
-export default function PollForm() {
-    const { register, unregister, handleSubmit } = useForm();
-
-    const onSubmit = (data) => {
-        console.log(data)
-    }
-
+export const Input = ({ title, classNames, ...textInputProps }) => {
     return (
-        <form style={styles.pollForm} onSubmit={handleSubmit(onSubmit)}>
-            {/* Poll Question/Title */}
-            <View style={styles.pollElement}>
-                <MyText content={'Poll Question:'} classNames={[styles.pollElementLabel]} />
-                <input placeholder="Enter Question..." style={styles.pollTextInput} {...register("pollQuestion")} />
-            </View>
-
-            {/* Poll Options */}
-            <View style={styles.pollElement}>
-                <MyText content={'Poll Options:'} classNames={[styles.pollElementLabel]} />
-                <PollOptions register={register} unregister={unregister} />
-            </View>
-
-            {/* Submit/Create Poll */}
-            <View style={[styles.pollElement, styles.pollSubmit]}>
-                <button style={styles.pollCreateSubmit} type="submit">Create Poll</button> 
-            </View>
-        </form>
+        <View style={[...(classNames ? classNames:[])]}>
+            {Boolean(title) && <Text>{title}</Text>}
+            <TextInput {...textInputProps} />
+        </View>
     )
 }
 
+export const MyInput = (props) => {
+    const { name, rules, classNames, defaultValue = '', ...inputProps } = props
+    const formContext = useFormContext()
+    const { control } = formContext
+    const { field } = useController({ name, control, rules, defaultValue })
 
+    return <Input 
+        {...inputProps}
+        classNames={classNames}
+        onChangeText={field.onChange}
+        onBlur={field.onBlur}
+        value={field.value} 
+    />
+}
+
+export default function PollForm() {
+    const formMethods = useForm()
+    const queryClient = useQueryClient()
+
+    const onSubmit = (form) => {
+        const poll = { ...form };
+        mutate(poll);
+    }
+
+    const createPoll = async (data) => {
+        const { data: response } = await axios.post('https://642fbe66c26d69edc882766d.mockapi.io/api/youPoll/polls', data);
+        console.log(response)
+    }
+
+    const { mutate, isLoading } = useMutation(createPoll, {
+        onSuccess: data => {
+            console.log(data);
+            const message = "success"
+            alert(message)
+        },
+        onError: () => {
+            alert("there was an error")
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries('create');
+        }
+    });
+
+    const onErrors = errors => {
+        if (errors['pollQuestion']) Alert.alert('You forgot something...', errors['pollQuestion'].message);
+    }
+
+    return (
+        <SafeAreaView style={styles.page}>
+            <View style={styles.subPage}>
+                <FormProvider {...formMethods}>
+                    <MyInput 
+                        name='pollQuestion'
+                        title='Poll Question'
+                        rules={{ required: 'Poll Question is required!' }}
+                    />
+                    {/* INSERT ALL THE BS */}
+                </FormProvider>
+                <MyButton 
+                    content='Create Poll' 
+                    callback={formMethods.handleSubmit(onSubmit, onErrors)}
+                />
+            </View>
+        </SafeAreaView>
+    )    
+}
 
 const styles = StyleSheet.create({
-    pollForm: {
-        display: 'flex',
-        flexDirection: 'column',
+    page: {
+        
     },
-    pollElement: {
-        margin: '10px',
-        padding: '15px',
-        borderTopWidth: '1px',
-        borderTopColor: 'lightgray',
+    subPage: {
+        
     },
-    pollElementLabel: {
-        flex: 1,
-        fontSize: '12pt',
-        textAlignVertical: 'center',
-    },
-    pollTextInput: {
-        backgroundColor: 'transparent',
-        fontFamily: 'Avenir-Roman',
-        borderColor: 'gray',
-        borderRadius: '8px',
-        padding: '5px',
-    },
-    pollSubmit: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    pollCreateSubmit: {
-        backgroundColor: '#3424FE',
-        color: 'white',
-        fontSize: '12pt',
-        padding: '5px',
-        paddingLeft: '40px',
-        paddingRight: '40px',
-        borderRadius: '8px',
-        fontFamily: 'Avenir-Roman',
+    error: {
+        color: 'darkred'
     }
 });
+
+
+// const { register, unregister, handleSubmit } = useForm();
+
+    // const onSubmit = (data) => {
+    //     console.log(data)
+    // }
+
+    // return (
+    //     <View style={styles.pollForm}>
+    //         <FormProvider {...formMethods}>
+    //             {/* Poll Question/Title */}
+    //             <View style={styles.pollElement}>
+    //                 <MyText content={'Poll Question:'} classNames={[styles.pollElementLabel]} />
+    //                 <Input placeholder={"Enter Question..."} style={styles.pollTextInput} {...register("pollQuestion")} />
+    //             </View>
+
+    //             {/* Poll Options */}
+    //             <View style={styles.pollElement}>
+    //                 <MyText content={'Poll Options:'} classNames={[styles.pollElementLabel]} />
+    //                 <PollOptions register={register} unregister={unregister} />
+    //             </View>
+
+    //             {/* Submit/Create Poll */}
+    //             <View style={[styles.pollElement, styles.pollSubmit]}>
+    //                 <button style={styles.pollCreateSubmit} type={"submit"}>Create Poll</button> 
+    //             </View>
+    //         </FormProvider>
+    //     </View>
+    // )
