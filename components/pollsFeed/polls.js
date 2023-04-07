@@ -34,7 +34,7 @@ export default function Polls() {
 
 const styles = StyleSheet.create({
     polls: {
-        maxHeight: '80%'
+        
     },
     error: {
         color: 'darkred'

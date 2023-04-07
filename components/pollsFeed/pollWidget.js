@@ -3,6 +3,8 @@ import { StyleSheet, View } from 'react-native';
 
 import { MyText } from '../utils/utils';
 
+import PollAnswer from './pollAnswer';
+
 export default function PollWidget(props) {
     let calculateTotal = () => {
         let total = 0;
@@ -12,6 +14,7 @@ export default function PollWidget(props) {
         return total
     }
     const [total, setTotal] = useState(calculateTotal());
+    const [voted, setVote] = useState();
 
     return (
         <View style={styles.pollWidget}>
@@ -21,7 +24,18 @@ export default function PollWidget(props) {
                 <MyText content={props.pollQuestion} classNames={[styles.font]} />
             </View>
             {/* Options, each with a width bar */}
-            
+            <View>
+                <MyText content={'A:'} classNames={[styles.boldQ, styles.font]} />
+                {props.pollOptions.map((option, i) => (
+                        <PollAnswer 
+                            key={i} {...option} 
+                            total={total}
+                            selected={Boolean(i == voted)}
+                            onPress={() => console.log(i)}
+                        />
+                    )
+                )}
+            </View>
         </View>
     )
 }

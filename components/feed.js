@@ -27,13 +27,12 @@ const styles = StyleSheet.create({
     container: {
         fontFamily: 'Avenir',
         alignItems: 'center',
-        justifyContent: 'center',
     },
     topSection: {
         width: '90%',
         padding: 10,
         margin: 5,
-        backgroundColor: '#E2D5FE',
+        backgroundColor: '#86cefa',
         borderColor: 'gray',
         borderWidth: 3
     },
@@ -47,7 +46,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     createNew: {
-        backgroundColor: '#4503CD',
+        backgroundColor: '#003396',
         borderRadius: 8,
         alignSelf: 'center',
         margin: 10,
