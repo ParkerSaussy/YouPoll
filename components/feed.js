@@ -30,18 +30,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     topSection: {
-        width: '100%',
+        width: '90%',
         padding: 10,
-        borderBottomColor: '#E2D5FE',
-        borderBottomWidth: 3,
+        margin: 5,
+        backgroundColor: '#E2D5FE',
+        borderColor: 'gray',
+        borderWidth: 3
     },
     welcome: {
-        fontSize: 28,
+        fontSize: 30,
         fontWeight: 800,
         alignSelf: 'center',
     },
     checkOut: {
-        fontSize: 16,
+        fontSize: 18,
         alignSelf: 'center',
     },
     createNew: {

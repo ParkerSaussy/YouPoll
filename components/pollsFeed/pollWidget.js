@@ -1,19 +1,45 @@
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
-import { MyButton, MyText } from '../utils/utils';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+
+import { MyText } from '../utils/utils';
 
 export default function PollWidget(props) {
-    console.log(props)
+    let calculateTotal = () => {
+        let total = 0;
+        props.pollOptions.forEach(opt => {
+            total = total + opt.votes
+        });
+        return total
+    }
+    const [total, setTotal] = useState(calculateTotal());
+
     return (
         <View style={styles.pollWidget}>
-            <MyText content={props.pollQuestion} />
-
+            {/* Poll Question - just text w/ Q appended */}
+            <View style={styles.pollQuestion}>
+                <MyText content={'Q:'} classNames={[styles.boldQ, styles.font]} />
+                <MyText content={props.pollQuestion} classNames={[styles.font]} />
+            </View>
+            {/* Options, each with a width bar */}
+            
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    pollQuestion: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    boldQ: {
+        fontWeight: 900,
+        marginRight: 5
+    },
+    font: {
+        fontSize: 18
+    },
     pollWidget: {
-        paddingBottom: 5,
+        padding: 15,
         borderBottomColor: '#eaeaea',
         borderBottomWidth: 1
     }
