@@ -12,6 +12,10 @@ import {
 import Feed from './components/feed';
 import CreatePoll from './components/createPoll/createPoll';
 
+// Mainly defining these for development so I don't accidentally delete them somewhere
+const primaryColor = '#4503CD';
+const secondaryColor = '#E2D5FE';
+
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();
 

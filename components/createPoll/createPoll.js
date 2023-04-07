@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     },
     pageHeader: {
         fontSize: 24,
-        backgroundColor: 'blue',
+        backgroundColor: '#4503CD',
         color: 'white',
         textAlign: 'center',
         textAlignVertical: 'center',

@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     pollOptions: {
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'space-evenly'
     },
     optionRow: {
         flex: 1,

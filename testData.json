@@ -1,0 +1,35 @@
+[
+    {
+        "pollQuestion": "What is the best framework?",
+        "pollOptions": [
+            {
+                "option": "React",
+                "votes": 10
+            },
+            {
+                "option": "Angular",
+                "votes": 6
+            },
+            {
+                "option": "Vue",
+                "votes": 0
+            }
+        ]
+    },{
+        "pollQuestion": "What is the best school in MOCO?",
+        "pollOptions": [
+            {
+                "option": "Churchill",
+                "votes": 83
+            },
+            {
+                "option": "RM",
+                "votes": 8
+            },
+            {
+                "option": "Wootton",
+                "votes": 2
+            }
+        ]
+    }
+]

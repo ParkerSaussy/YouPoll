@@ -1,20 +1,16 @@
 import { useForm, useFormContext, useController, FormProvider } from "react-hook-form";
 import { StyleSheet, View, SafeAreaView, TextInput, Text, Alert } from 'react-native';
-import { MyButton } from "../utils/utils";
+import { useMutation, useQueryClient } from 'react-query';
+
 import axios from "axios";
-import {
-    useQuery,
-    useMutation,
-    useQueryClient,
-    QueryClient,
-    QueryClientProvider,
-  } from 'react-query';
+
+import { MyButton, MyText } from "../utils/utils";
 
 export const Input = ({ title, classNames, ...textInputProps }) => {
     return (
         <View style={[...(classNames ? classNames:[])]}>
-            {Boolean(title) && <Text>{title}</Text>}
-            <TextInput {...textInputProps} />
+            {Boolean(title) && <MyText content={title} classNames={[styles.textLabel]} />}
+            <TextInput style={styles.input} placeholder={'Enter Something...'} {...textInputProps} />
         </View>
     )
 }
@@ -40,7 +36,8 @@ export default function PollForm() {
 
     const onSubmit = (form) => {
         const poll = { ...form };
-        mutate(poll);
+        console.log(poll)
+        // mutate(poll);
     }
 
     const createPoll = async (data) => {
@@ -48,7 +45,7 @@ export default function PollForm() {
         console.log(response)
     }
 
-    const { mutate, isLoading } = useMutation(createPoll, {
+    const { mutate } = useMutation(createPoll, {
         onSuccess: data => {
             console.log(data);
             const message = "success"
@@ -63,22 +60,36 @@ export default function PollForm() {
     });
 
     const onErrors = errors => {
-        if (errors['pollQuestion']) Alert.alert('You forgot something...', errors['pollQuestion'].message);
+        console.log(errors)
+        if (errors['pollQuestion']) Alert.alert('You forgot something...', errors['pollQuestion'].message)
+        else if (errors['pollOption']) Alert.alert('You forgot something...', errors['pollOption'].message)
     }
 
     return (
-        <SafeAreaView style={styles.page}>
-            <View style={styles.subPage}>
-                <FormProvider {...formMethods}>
+        <SafeAreaView style={styles.layout}>
+
+            <View style={[styles.section, styles.sectionBorder]}>
+                <FormProvider  {...formMethods}>
                     <MyInput 
                         name='pollQuestion'
-                        title='Poll Question'
+                        title='Poll Question:'
                         rules={{ required: 'Poll Question is required!' }}
                     />
-                    {/* INSERT ALL THE BS */}
+                    <View style={[styles.section]}>
+                        <MyInput 
+                            name='pollOption'
+                            title='Poll Options:'
+                            rules={{ required: 'No options can be blank and 1+ options are required!' }}
+                        />
+                    </View>
+                    
                 </FormProvider>
+            </View>
+            <View style={styles.section}>
                 <MyButton 
                     content='Create Poll' 
+                    classNames={[styles.submitButton]}
+                    textClassnames={[styles.submitButton]}
                     callback={formMethods.handleSubmit(onSubmit, onErrors)}
                 />
             </View>
@@ -87,14 +98,39 @@ export default function PollForm() {
 }
 
 const styles = StyleSheet.create({
-    page: {
-        
+    layout: {
+
     },
-    subPage: {
-        
+    provider: {
+        display: 'flex',
+        flexDirection: 'column',
     },
-    error: {
-        color: 'darkred'
+    section: {
+        marginTop: 10,
+        marginBottom: 10,
+        paddingBottom: 20
+    },
+    sectionBorder: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#eaeaea',
+    },
+    textLabel: {
+        fontSize: 20
+    },
+    input: {
+        borderColor: 'gray',
+        borderRadius: 5,
+        borderWidth: 1,
+        padding: 8,
+        fontSize: 16
+    },
+    submitButton: {
+        backgroundColor: '#4503CD',
+        color: 'white',
+        fontSize: 16,
+        borderRadius: 8,
+        alignSelf: 'center',
+        padding: 5
     }
 });
 
