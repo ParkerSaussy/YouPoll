@@ -5,7 +5,7 @@ import { MyText } from '../utils/utils';
 
 import PollForm from './pollForm';
 
-export default function CreatePoll() {
+export default function CreatePoll({ navigation }) {
     return (
         <SafeAreaView>
             <KeyboardAwareScrollView contentContainerStyle={styles.keyboardAware}>
@@ -14,7 +14,7 @@ export default function CreatePoll() {
                 </View>
                 <View style={styles.content}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-                        <PollForm  />
+                        <PollForm navigation={navigation} />
                     </TouchableWithoutFeedback>
                 </View>
             </KeyboardAwareScrollView>

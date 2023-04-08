@@ -1,36 +1,12 @@
 import { useState } from "react";
-import { useForm, useFormContext, useController, FormProvider } from "react-hook-form";
-import { StyleSheet, View, TextInput, Alert,  } from 'react-native';
+import { useForm, FormProvider } from "react-hook-form";
+import { StyleSheet, View, Alert } from 'react-native';
 import { useMutation, useQueryClient } from 'react-query';
 import axios from "axios";
 
-import { MyButton, MyText } from "../utils/utils";
+import { MyButton, MyInput } from "../utils/utils";
 
-export const Input = ({ title, classNames, ...textInputProps }) => {
-    return (
-        <View style={[...(classNames ? classNames:[])]}>
-            {Boolean(title) && <MyText content={title} classNames={[styles.textLabel]} />}
-            <TextInput style={styles.input} placeholder={'Enter Something...'} {...textInputProps} />
-        </View>
-    )
-}
-
-export const MyInput = (props) => {
-    const { name, rules, classNames, defaultValue = '', ...inputProps } = props
-    const formContext = useFormContext()
-    const { control } = formContext
-    const { field } = useController({ name, control, rules, defaultValue })
-
-    return <Input 
-        {...inputProps}
-        classNames={classNames}
-        onChangeText={field.onChange}
-        onBlur={field.onBlur}
-        value={field.value} 
-    />
-}
-
-export default function PollForm() {
+export default function PollForm({ navigation }) {
     const formMethods = useForm()
     const queryClient = useQueryClient()
 
@@ -56,10 +32,18 @@ export default function PollForm() {
 
     const { mutate } = useMutation(createPoll, {
         onSuccess: () => {
-            alert('Poll successfully created!');
+            // Redirect back to main screen when we have a successful creation
+            Alert.alert('Success', 'Poll successfully created!', [
+                {
+                    text: 'OK', 
+                    onPress: () => navigation.navigate('Home', {
+                        reloadOnSuccess: true
+                    }) 
+                }
+            ]);
         },
         onError: () => {
-            alert("Error creating poll - please try again later.");
+            Alert.alert("Error creating poll - please try again later.");
         },
         onSettled: () => {
             queryClient.invalidateQueries('create');
@@ -199,17 +183,6 @@ const styles = StyleSheet.create({
     },
     addOptionButtonText: {
         fontSize: 16
-    },
-    textLabel: {
-        fontSize: 20
-    },
-    input: {
-        borderColor: 'gray',
-        borderRadius: 10,
-        borderWidth: 1,
-        padding: 8,
-        fontSize: 16,
-        fontFamily: 'Avenir-Roman'
     },
     submitButton: {
         backgroundColor: '#003396',

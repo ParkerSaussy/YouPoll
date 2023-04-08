@@ -2,7 +2,7 @@ import { StyleSheet, SafeAreaView, ActivityIndicator, ScrollView } from 'react-n
 import { useQuery } from 'react-query';
 import axios from 'axios';
 
-import { MyText } from '../utils/utils';
+import { MyButton, MyText } from '../utils/utils';
 import PollWidget from './pollWidget';
 
 const getPolls = async () => {
@@ -11,8 +11,8 @@ const getPolls = async () => {
 }
 
 export default function Polls() {
-    const { isLoading, error, data } = useQuery('pollData', getPolls);
-    
+    const { isLoading, error, data, refetch } = useQuery('pollData', getPolls);
+   
     if (isLoading) return (
         <SafeAreaView style={styles.polls}>
             <MyText content={'Loading...'} />
@@ -26,6 +26,12 @@ export default function Polls() {
     )
     else return data ? (
         <SafeAreaView style={styles.polls}>
+            <MyButton 
+                content={'Refresh Data'} 
+                callback={refetch} 
+                classNames={[styles.refreshButton]}
+                textClassnames={[styles.refreshButtonText]}
+            />
             <ScrollView>
                 {/* Compound key below prevents react from thinking one element is another when react query repopulates the data array */}
                 {data.reverse().map((poll, i) => <PollWidget key={`${i}${poll.pollQuestion}`} {...JSON.parse(JSON.stringify(poll))} />)}
@@ -40,5 +46,15 @@ const styles = StyleSheet.create({
     },
     error: {
         color: 'darkred'
+    },
+    refreshButton: {
+        alignSelf: 'flex-end',
+        padding: 5,
+        borderColor: '#003396',
+        borderRadius: 5,
+        borderWidth: 1
+    },
+    refreshButtonText: {
+        color: '#003396'
     }
 })
