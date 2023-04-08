@@ -3,35 +3,73 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { MyText } from "../utils/utils";
 
 export default function PollAnswer(props) {
+    // Rather than alter the actual stored votecount, just iterate by 1 if this option is selected
+    let getVoteCount = () => {
+        return props.selected ? props.votes+1 : props.votes
+    }
+
     let getWidth = () => {
-        let value = 100*(props.votes/props.total);
+        let value = 100*(getVoteCount()/props.total);
         if (value == 0) value = 1;
         return `${value}%`
     }
 
+    let getWidgetStyling = () => {
+        return props.selected ? styles.selected:styles.unselected
+    }
+
+    let getVoteBarStyling = () => {
+        return props.selected ? styles.voteBarSelected:styles.voteBarUnselected
+    }
+
+    let getVoteShare = () => {
+        return (100*(getVoteCount()/props.total)).toFixed(1)
+    }
+
     return (
-        <Pressable style={styles.widget} onPress={props.onPress}>
-            <MyText content={props.option} />
+        <Pressable style={[styles.widget, getWidgetStyling()]} onPress={props.onPress}>
+            <MyText content={props.option} classNames={[styles.font]} />
             <View 
-                style={[styles.voteBar, {
+                style={[getVoteBarStyling(), styles.voteBar, {
                     width: getWidth()
                 }]} 
             />
+            <MyText content={`${getVoteShare()}%`} classNames={[styles.voteShare]} />
         </Pressable>
     )
 }
 
 const styles = StyleSheet.create({
     widget: {
-        height: 50,
-        padding: 2,
-        borderWidth: 1,
+        height: 55,
+        padding: 5,
         borderColor: '#000',
         borderRadius: 8,
         marginBottom: 2
     },
+    unselected: {
+        borderWidth: StyleSheet.hairlineWidth,
+    },
+    selected: {
+        borderWidth: 3,
+    },
     voteBar: {
+        borderRadius: 4,
+        height: 20,
+    },
+    voteBarUnselected: {
         backgroundColor: '#86cefa',
-        height: 22,
+    },
+    voteBarSelected: {
+        backgroundColor: '#003396',
+    },
+    font: {
+        fontSize: 16,
+    },
+    voteShare: {
+        position: "absolute",
+        fontSize: 16,
+        right: 5,
+        top: 5,
     }
 });

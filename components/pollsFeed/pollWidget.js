@@ -13,8 +13,17 @@ export default function PollWidget(props) {
         });
         return total
     }
+
+    // Initial states. voted must=null to avoid 0 
     const [total, setTotal] = useState(calculateTotal());
-    const [voted, setVote] = useState();
+    const [voted, setVote] = useState(null);
+
+    let onSelect = (i) => {
+        // If we're voting for the first time
+        if (voted == null) setTotal(total+1)
+
+        setVote(i);
+    }
 
     return (
         <View style={styles.pollWidget}>
@@ -31,7 +40,7 @@ export default function PollWidget(props) {
                             key={i} {...option} 
                             total={total}
                             selected={Boolean(i == voted)}
-                            onPress={() => console.log(i)}
+                            onPress={() => onSelect(i)}
                         />
                     )
                 )}
@@ -55,6 +64,6 @@ const styles = StyleSheet.create({
     pollWidget: {
         padding: 15,
         borderBottomColor: '#eaeaea',
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
     }
 });

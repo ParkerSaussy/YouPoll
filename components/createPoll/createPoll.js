@@ -8,7 +8,10 @@ export default function CreatePoll() {
     return (
         <SafeAreaView style={styles.page}>
             <View style={styles.content}> 
-                <MyText content={'Create New Poll:'} classNames={[styles.pageHeader]} />
+                <View style={styles.topSection}>
+                    <MyText content={'Create New Poll:'} classNames={[styles.pageHeader]} />
+                </View>
+                
                 <PollForm />
             </View>
         </SafeAreaView>
@@ -17,16 +20,22 @@ export default function CreatePoll() {
 
 const styles = StyleSheet.create({
     page: {
-        height: '100%'
+        
+    },
+    topSection: {
+        width: '90%',
+        padding: 10,
+        backgroundColor: '#86cefa',
+        borderColor: 'gray',
+        borderWidth: 3,
+        alignSelf: 'center'
     },
     content: {
         padding: 20
     },
     pageHeader: {
-        fontSize: 24,
-        backgroundColor: '#003396',
-        color: 'white',
-        textAlign: 'center',
-        textAlignVertical: 'center',
+        fontSize: 30,
+        fontWeight: 800,
+        alignSelf: 'center',
     }
 });

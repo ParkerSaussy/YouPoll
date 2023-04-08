@@ -1,6 +1,6 @@
 [
     {
-        "pollQuestion": "What is the best framework?",
+        "pollQuestion": "What is the best JS framework?",
         "pollOptions": [
             {
                 "option": "React",
@@ -28,6 +28,22 @@
             },
             {
                 "option": "Wootton",
+                "votes": 2
+            }
+        ]
+    },{
+        "pollQuestion": "What is Ben Affleck's best movie?",
+        "pollOptions": [
+            {
+                "option": "Pearl Harbor",
+                "votes": 1
+            },
+            {
+                "option": "Argo",
+                "votes": 3
+            },
+            {
+                "option": "Gone Girl",
                 "votes": 2
             }
         ]

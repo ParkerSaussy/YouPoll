@@ -58,7 +58,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     pollsSection: {
-        padding: 10
+        padding: 10,
+        borderTopColor: '#aeaeae',
+        borderTopWidth: StyleSheet.hairlineWidth
     }
-    
 });

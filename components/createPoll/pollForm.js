@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { useForm, useFormContext, useController, FormProvider } from "react-hook-form";
-import { StyleSheet, View, SafeAreaView, TextInput, Text, Alert } from 'react-native';
+import { StyleSheet, View, SafeAreaView, TextInput, Alert, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useMutation, useQueryClient } from 'react-query';
-
 import axios from "axios";
 
 import { MyButton, MyText } from "../utils/utils";
@@ -62,27 +63,93 @@ export default function PollForm() {
     const onErrors = errors => {
         console.log(errors)
         if (errors['pollQuestion']) Alert.alert('You forgot something...', errors['pollQuestion'].message)
-        else if (errors['pollOption']) Alert.alert('You forgot something...', errors['pollOption'].message)
+        else if (errors['pollOption']) Alert.alert('You forgot something...', errors['pollOption'][0].message)
+    }
+
+    const [options, setOptions] = useState([]);
+    const [optionCount, setOptionCount] = useState(1);
+
+    /* Iterate our counter, AND register the new entry field */
+    let addOption = () => {
+        // Capping at 10 options per Poll for display & usability reasons
+        if (options.length == 9) return
+
+        // Prepare Data (new title + list of titles)
+        let newOptionTitle = `pollOption.${optionCount}`;
+        let newOptions = options;
+        newOptions.push(newOptionTitle);
+        
+        // Update States w/ New data
+        setOptions([...newOptions]);
+        setOptionCount(optionCount+1)
+    }
+
+    /* Remove from options */
+    let removeOption = (optionKey) => {
+        /* 
+        NOTE: This implementation is NOT scalable, but capping at 10 it's acceptable for now. 
+        Would ideally do this with a map & indices but ran out of time to implement further.
+        */
+        let newOptions = options;
+        let index;
+        newOptions.forEach((item, i) => {
+            if (item == optionKey) index = i;
+        })
+        newOptions.splice(index,1);
+
+        // Update State and unregister
+        setOptions([...newOptions]);
     }
 
     return (
-        <SafeAreaView style={styles.layout}>
-
+        <KeyboardAwareScrollView contentContainerStyle={styles.layout}>
             <View style={[styles.section, styles.sectionBorder]}>
                 <FormProvider  {...formMethods}>
+                    {/* POLL QUESTION */}
                     <MyInput 
                         name='pollQuestion'
                         title='Poll Question:'
                         rules={{ required: 'Poll Question is required!' }}
                     />
+                    {/* POLL OPTIONS */}
                     <View style={[styles.section]}>
+                        {/* First Poll Option - not Deletable */}
                         <MyInput 
-                            name='pollOption'
+                            name='pollOption.0'
                             title='Poll Options:'
                             rules={{ required: 'No options can be blank and 1+ options are required!' }}
                         />
+                        {/* Extra Poll Options */}
+                        {options.length > 0 ? (
+                            <View style={styles.pollOptions}>
+                                {options.map((optionKey) => 
+                                    <View key={optionKey} style={[styles.optionRow]}>
+                                        <MyInput 
+                                            name={optionKey}
+                                            classNames={[styles.entry]}
+                                            rules={{ required: 'No options can be blank and 1+ options are required!' }}
+                                        />
+                                        <MyButton 
+                                            content={'X'} 
+                                            classNames={[styles.deleteButton]}
+                                            textClassnames={[styles.deleteButtonText]}
+                                            callback={() => removeOption(optionKey)} 
+                                        />
+                                    </View>
+                                )}
+                            </View>
+                        ):null}
+                        
+                        {/* Add New Option Button */}
+                        <View style={styles.addOption}>
+                            <MyButton 
+                                content={'+ Add Poll Option'} 
+                                classNames={[styles.addOptionButton]} 
+                                textClassnames={[styles.addOptionButtonText]}
+                                callback={addOption} 
+                            />
+                        </View>
                     </View>
-                    
                 </FormProvider>
             </View>
             <View style={styles.section}>
@@ -93,36 +160,50 @@ export default function PollForm() {
                     callback={formMethods.handleSubmit(onSubmit, onErrors)}
                 />
             </View>
-        </SafeAreaView>
+        </KeyboardAwareScrollView>
     )    
 }
 
 const styles = StyleSheet.create({
     layout: {
-
+        height: '105%'
     },
     provider: {
         display: 'flex',
         flexDirection: 'column',
     },
     section: {
-        marginTop: 10,
-        marginBottom: 10,
-        paddingBottom: 20
+        marginTop: 5,
+        marginBottom: 5,
     },
     sectionBorder: {
-        borderBottomWidth: 1,
+        borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: '#eaeaea',
+    },
+    addOption: {
+        borderTopWidth: StyleSheet.hairlineWidth,
+        borderTopColor: '#eaeaea',
+        padding: 5,
+    },
+    addOptionButton: {
+        borderRadius: 8,
+        
+        padding: 4,
+        alignSelf: 'flex-end'
+    },
+    addOptionButtonText: {
+        fontSize: 16
     },
     textLabel: {
         fontSize: 20
     },
     input: {
         borderColor: 'gray',
-        borderRadius: 5,
+        borderRadius: 10,
         borderWidth: 1,
         padding: 8,
-        fontSize: 16
+        fontSize: 16,
+        fontFamily: 'Avenir-Roman'
     },
     submitButton: {
         backgroundColor: '#003396',
@@ -130,36 +211,34 @@ const styles = StyleSheet.create({
         fontSize: 16,
         borderRadius: 8,
         alignSelf: 'center',
-        padding: 5
-    }
+        padding: 5,
+        
+    },
+
+    pollOptions: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
+    },
+    optionRow: {
+        marginTop: 5,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderTopColor: '#ededed',
+        borderTopWidth: '1px',
+    },
+    deleteButton: {
+        alignSelf: 'center',
+        alignContent: 'center',
+        width: 30,
+        height: 30,
+        backgroundColor: 'lightgray',
+        borderRadius: 5,
+        padding: 8
+    },
+    deleteButtonText: {
+        alignSelf: 'center',
+        textAlignVertical:'center'
+    },
 });
-
-
-// const { register, unregister, handleSubmit } = useForm();
-
-    // const onSubmit = (data) => {
-    //     console.log(data)
-    // }
-
-    // return (
-    //     <View style={styles.pollForm}>
-    //         <FormProvider {...formMethods}>
-    //             {/* Poll Question/Title */}
-    //             <View style={styles.pollElement}>
-    //                 <MyText content={'Poll Question:'} classNames={[styles.pollElementLabel]} />
-    //                 <Input placeholder={"Enter Question..."} style={styles.pollTextInput} {...register("pollQuestion")} />
-    //             </View>
-
-    //             {/* Poll Options */}
-    //             <View style={styles.pollElement}>
-    //                 <MyText content={'Poll Options:'} classNames={[styles.pollElementLabel]} />
-    //                 <PollOptions register={register} unregister={unregister} />
-    //             </View>
-
-    //             {/* Submit/Create Poll */}
-    //             <View style={[styles.pollElement, styles.pollSubmit]}>
-    //                 <button style={styles.pollCreateSubmit} type={"submit"}>Create Poll</button> 
-    //             </View>
-    //         </FormProvider>
-    //     </View>
-    // )
