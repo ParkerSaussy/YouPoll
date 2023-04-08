@@ -102,7 +102,7 @@ export default function PollForm() {
     }
 
     return (
-        <KeyboardAwareScrollView contentContainerStyle={styles.layout}>
+        <View style={styles.layout}>
             <View style={[styles.section, styles.sectionBorder]}>
                 <FormProvider  {...formMethods}>
                     {/* POLL QUESTION */}
@@ -160,13 +160,13 @@ export default function PollForm() {
                     callback={formMethods.handleSubmit(onSubmit, onErrors)}
                 />
             </View>
-        </KeyboardAwareScrollView>
+        </View>
     )    
 }
 
 const styles = StyleSheet.create({
     layout: {
-        height: '105%'
+        
     },
     provider: {
         display: 'flex',
@@ -212,9 +212,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignSelf: 'center',
         padding: 5,
-        
     },
-
     pollOptions: {
         display: 'flex',
         flexDirection: 'column',
@@ -235,10 +233,11 @@ const styles = StyleSheet.create({
         height: 30,
         backgroundColor: 'lightgray',
         borderRadius: 5,
-        padding: 8
+        padding: 6
     },
     deleteButtonText: {
         alignSelf: 'center',
-        textAlignVertical:'center'
+        textAlignVertical:'center',
+        fontWeight: 900
     },
 });

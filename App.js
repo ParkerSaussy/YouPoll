@@ -1,20 +1,10 @@
-import { StyleSheet, SafeAreaView } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import Feed from './components/feed';
 import CreatePoll from './components/createPoll/createPoll';
-
-// Mainly defining these for development so I don't accidentally delete them somewhere
-const primaryColor = '#003396';
-const secondaryColor = '#86cefa';
 
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();

@@ -1,4 +1,5 @@
-import { StyleSheet, SafeAreaView, View } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { MyText } from '../utils/utils';
 
@@ -6,29 +7,33 @@ import PollForm from './pollForm';
 
 export default function CreatePoll() {
     return (
-        <SafeAreaView style={styles.page}>
-            <View style={styles.content}> 
+        <SafeAreaView>
+            <KeyboardAwareScrollView contentContainerStyle={styles.keyboardAware}>
                 <View style={styles.topSection}>
                     <MyText content={'Create New Poll:'} classNames={[styles.pageHeader]} />
                 </View>
-                
-                <PollForm />
-            </View>
+                <View style={styles.content}>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+                        <PollForm  />
+                    </TouchableWithoutFeedback>
+                </View>
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
-    page: {
-        
-    },
     topSection: {
         width: '90%',
-        padding: 10,
+        padding: 20,
         backgroundColor: '#86cefa',
         borderColor: 'gray',
         borderWidth: 3,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        marginTop: 5,
+    },
+    keyboardAware: {
+        height: '100%',
     },
     content: {
         padding: 20
