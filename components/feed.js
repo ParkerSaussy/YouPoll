@@ -1,4 +1,5 @@
 import { StyleSheet, View, SafeAreaView } from 'react-native';
+
 import { MyButton, MyText } from './utils/utils';
 
 import Polls from './pollsFeed/polls';

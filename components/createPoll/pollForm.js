@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm, useFormContext, useController, FormProvider } from "react-hook-form";
-import { StyleSheet, View, SafeAreaView, TextInput, Alert, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { StyleSheet, View, TextInput, Alert,  } from 'react-native';
 import { useMutation, useQueryClient } from 'react-query';
 import axios from "axios";
 
@@ -37,23 +36,30 @@ export default function PollForm() {
 
     const onSubmit = (form) => {
         const poll = { ...form };
-        console.log(poll)
-        // mutate(poll);
+        let pollOptions = []
+        poll.pollOptions.forEach(option => {
+            pollOptions.push({
+                option,
+                votes: 0
+            })
+        })
+        let data = {
+            pollQuestion: poll.pollQuestion,
+            pollOptions
+        }
+        mutate(data);
     }
 
     const createPoll = async (data) => {
-        const { data: response } = await axios.post('https://642fbe66c26d69edc882766d.mockapi.io/api/youPoll/polls', data);
-        console.log(response)
+        await axios.post('https://642fbe66c26d69edc882766d.mockapi.io/api/youPoll/polls', data);
     }
 
     const { mutate } = useMutation(createPoll, {
-        onSuccess: data => {
-            console.log(data);
-            const message = "success"
-            alert(message)
+        onSuccess: () => {
+            alert('Poll successfully created!');
         },
         onError: () => {
-            alert("there was an error")
+            alert("Error creating poll - please try again later.");
         },
         onSettled: () => {
             queryClient.invalidateQueries('create');
@@ -61,7 +67,6 @@ export default function PollForm() {
     });
 
     const onErrors = errors => {
-        console.log(errors)
         if (errors['pollQuestion']) Alert.alert('You forgot something...', errors['pollQuestion'].message)
         else if (errors['pollOption']) Alert.alert('You forgot something...', errors['pollOption'][0].message)
     }
@@ -75,7 +80,7 @@ export default function PollForm() {
         if (options.length == 9) return
 
         // Prepare Data (new title + list of titles)
-        let newOptionTitle = `pollOption.${optionCount}`;
+        let newOptionTitle = `pollOptions.${optionCount}`;
         let newOptions = options;
         newOptions.push(newOptionTitle);
         
@@ -99,10 +104,11 @@ export default function PollForm() {
 
         // Update State and unregister
         setOptions([...newOptions]);
+        formMethods.unregister(optionKey);
     }
 
     return (
-        <View style={styles.layout}>
+        <View>
             <View style={[styles.section, styles.sectionBorder]}>
                 <FormProvider  {...formMethods}>
                     {/* POLL QUESTION */}
@@ -115,7 +121,7 @@ export default function PollForm() {
                     <View style={[styles.section]}>
                         {/* First Poll Option - not Deletable */}
                         <MyInput 
-                            name='pollOption.0'
+                            name='pollOptions.0'
                             title='Poll Options:'
                             rules={{ required: 'No options can be blank and 1+ options are required!' }}
                         />
@@ -165,8 +171,9 @@ export default function PollForm() {
 }
 
 const styles = StyleSheet.create({
-    layout: {
-        
+    entry: {
+        flex: 1,
+        marginRight: 5,
     },
     provider: {
         display: 'flex',
@@ -187,7 +194,6 @@ const styles = StyleSheet.create({
     },
     addOptionButton: {
         borderRadius: 8,
-        
         padding: 4,
         alignSelf: 'flex-end'
     },
@@ -219,7 +225,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     optionRow: {
-        marginTop: 5,
+        marginTop: 10,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',

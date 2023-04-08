@@ -9,6 +9,8 @@ export default function PollAnswer(props) {
     }
 
     let getWidth = () => {
+        if (props.total == 0) return 1
+
         let value = 100*(getVoteCount()/props.total);
         if (value == 0) value = 1;
         return `${value}%`
@@ -23,7 +25,11 @@ export default function PollAnswer(props) {
     }
 
     let getVoteShare = () => {
-        return (100*(getVoteCount()/props.total)).toFixed(1)
+        if (props.total == 0) return 0
+
+        let share = (100*(getVoteCount()/props.total)).toFixed(1)
+        print(share)
+        return share
     }
 
     return (
