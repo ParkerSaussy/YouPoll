@@ -51,8 +51,16 @@ export default function PollForm({ navigation }) {
     });
 
     const onErrors = errors => {
-        if (errors['pollQuestion']) Alert.alert('You forgot something...', errors['pollQuestion'].message)
-        else if (errors['pollOption']) Alert.alert('You forgot something...', errors['pollOption'][0].message)
+        let message = ''
+
+        try {
+            if (errors['pollQuestion']) message = errors['pollQuestion'].message
+            else if (errors['pollOptions']) message = errors['pollOptions'][0].message
+    
+            Alert.alert('You forgot something...', message)
+        } catch {
+            Alert.alert('You forgot something...', 'Could not parse data.')
+        }
     }
 
     const [options, setOptions] = useState([]);
